@@ -10,29 +10,45 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    #the following line is redundant now because the render method automatically loads the template located
-    #at in the templates directory structure of this app.
-    template = loader.get_template('polls/index.html')
-    context = {
-        'latest_question_list': latest_question_list,
-    }
-    return render(request, 'polls/index.html', context)
-
-def detail(request, question_id):
-    try:
-        question = Question.objects.get(pk=question_id)
-    except Question.DoesNotExist:
-        raise Http404("Question does not exist")
-    return render(request, 'polls/detail.html', {'question': question})
-
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
-# ...
+from django.views import generic
 
 
+
+#these views are using a generic template provided by the django framework
+#this is a common control pattern in these applications so it is streamlining this process:
+#   1) get data from database based on some parameter passed via the url
+#   2) loading a template with the dat
+#   3) return the template to the browser
+
+
+#this generic view is meant to display a list of objects
+class IndexView(generic.ListView):
+    #template_name is used a variable used to tell django which template to use
+    template_name = 'polls/index.html'
+    #context_object_name will provide the view with the name of the list we are showing to the browser
+    #auto generated name is possible, but ould be question_list, and we are only looking at 5 most
+    #recent, so it is relevant to define this explicitly
+    context_object_name = 'latest_question_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+
+#display a detailed page for a particular object
+#expects the primary key value captured from the URL to be called "pk"
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polls/detail.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
+
+
+
+#this view is still hardcoded since this modifies data, and has some backend logic which isnt
+#represented in the built-in generic views
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
@@ -52,8 +68,3 @@ def vote(request, question_id):
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
 
-
-
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/results.html', {'question': question})
