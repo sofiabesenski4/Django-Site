@@ -1,1 +1,10 @@
-Index html for word count!
+{% if target_list %}
+    <ul>
+    {% for target in target_list %}
+        <li><a href="{% url 'word_count:details' target.id %}">{{ target.target_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No targets are listed.</p>
+{% endif %}
+<br>

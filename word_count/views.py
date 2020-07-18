@@ -12,12 +12,12 @@ from django.urls import reverse
 
 
 def index(request):
-    targets_list = Target.objects.all()
+    target_list = Target.objects.all()
     #the following line is redundant now because the render method automatically loads the template located
     #at in the templates directory structure of this app.
 
     context = {
-        'targets': targets_list,
+        'target_list': target_list,
     }
     return render(request, 'word_count/index.html', context)
 
