@@ -37,18 +37,43 @@ def search(request):
         context={}
         form = WebScrapeForm(request.POST)
         if form.is_valid():
-            target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"])
-            scraped_body = target.body_set.create(body_text=web_scrape(target.target_text))
-            target.save()
-            return HttpResponseRedirect(reverse("word_count:index"))
-        context["error_message"]= "Form field invalid"
-        return render(request, reverse('word_count:search'), context)
+            try:
+                target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"])
+                scraped_body = target.body_set.create(body_text=web_scrape(target.target_text))
+                target.save()
+                return HttpResponseRedirect(reverse("word_count:index"))
+            except:
+                context["error_message"]= "Error with URL"
+                context["form"]= form
+                return render(request, "word_count/search.html", context)
+
     else:
         #then this is the user's first intereaction with the form view: need to populate the form without
         #any values, and allow user to enter a URL
         context = {
             'form' : WebScrapeForm()}
+
         return render(request, 'word_count/search.html', context)
 
+
+
+import urllib.request
+import re
+from bs4 import BeautifulSoup
+from urllib.error import HTTPError
+
 def web_scrape(url):
-    return "TESTING SCRAPED WEB COfadfdssfNTENT"
+
+    try:
+        response = urllib.request.urlopen(url)
+
+    except HTTPError as e:
+        print(e)
+        raise Exception("HTTPError")
+
+
+    soup = BeautifulSoup(response, 'html.parser')
+
+    return soup.get_text()[:19999]
+
+

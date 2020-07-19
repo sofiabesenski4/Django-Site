@@ -12,6 +12,6 @@ class Target(models.Model):
 class Body(models.Model):
 
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
-    body_text =models.CharField(max_length= 5000)
+    body_text =models.CharField(max_length= 20000)
     def __str__(self):
         return self.body_text

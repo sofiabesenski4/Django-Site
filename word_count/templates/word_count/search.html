@@ -1,5 +1,5 @@
 <h1>Web Scraper</h1>
-
+{% if error_message %}  {{ error_message  }} {% endif%}
 <form  method="post">
 {% csrf_token %}
     {{ form }}
