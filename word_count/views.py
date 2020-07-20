@@ -38,14 +38,28 @@ def search(request):
         form = WebScrapeForm(request.POST)
         if form.is_valid():
             try:
-                target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"])
-                scraped_body = target.body_set.create(body_text=web_scrape(target.target_text))
-                target.save()
-                return HttpResponseRedirect(reverse("word_count:index"))
+
+                scraped_data = web_scrape(form.cleaned_data["search_url"])
+                if scraped_data:
+
+                    target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"])
+                    scraped_body = target.body_set.create(body_text=scraped_data)
+                    target.save()
+
+                    return HttpResponseRedirect(reverse("word_count:index"))
+                else:
+                    raise Exception
             except:
-                context["error_message"]= "Error with URL"
+                context["error_message"]= "URL Lookup did not work"
                 context["form"]= form
-                return render(request, "word_count/search.html", context)
+
+                return render(request, 'word_count/search.html', context)
+
+        else:
+            context["error_message"] = "URL or Web Error"
+            context["form"] = form
+
+            return render(request, 'word_count/search.html', context)
 
     else:
         #then this is the user's first intereaction with the form view: need to populate the form without
