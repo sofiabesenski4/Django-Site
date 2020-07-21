@@ -23,5 +23,7 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('word_count/', include('word_count.urls')),
-    path('polls/', include('polls.urls'))
+    path('polls/', include('polls.urls')),
+    
+
 ]

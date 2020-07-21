@@ -53,13 +53,13 @@ def search(request):
                 context["error_message"]= "URL Lookup did not work"
                 context["form"]= form
 
-                return render(request, 'word_count/search.html', context)
+                return render(request, reverse('word_count:search').strip('/')+".html", context)
 
         else:
             context["error_message"] = "URL or Web Error"
             context["form"] = form
 
-            return render(request, 'word_count/search.html', context)
+            return render(request, reverse('word_count:search').strip('/')+".html", context)
 
     else:
         #then this is the user's first intereaction with the form view: need to populate the form without
