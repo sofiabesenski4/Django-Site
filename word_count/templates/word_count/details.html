@@ -1,11 +1,29 @@
-<b>Target ID</b> :<br>
-{{ target_id }}<br>
-<b>Target URL:</b>
-<br>
-{{ target_text}}
-<br>
-<b>Body Text:</b><br>
+
+<h1>Word_Count:Index</h1>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'word_count/style.css' %}">
+
+<HEAD>
+
+<TITLE>Word_Count: Details :{{ target_text }}</TITLE>
+
+</HEAD>
+
+<hr>
+<h1>Details</h1>
+<H2>URL= <a href="{{ target_text}}">{{ target_text}}</a>
+</H2>
+<b>Target ID</b> : {{ target_id }}<br>
+<h2><b>Body Text:</h2></b><br>
 {{ body_text}}
 <br><br>
-
+<hr>
 <a href="{% url 'word_count:index'%}">back</a>
+
+<br>
+<HR>
+Sofia Besenski 2020 github@sofiabesenski4
+</BODY>
+
+</HTML>

@@ -1,5 +1,20 @@
 <h1>Word_Count:Index</h1>
-<a href="{% url 'word_count:search' %}"><b>Search</b></a>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'word_count/style.css' %}">
+
+<HEAD>
+
+<TITLE>Word_Count: Web Scraper and Text Analysis Tool</TITLE>
+
+</HEAD>
+
+<hr>
+
+<H1><a href="{% url 'word_count:search' %}"><b>Search</b></a>
+</H1>
+
+<H2>Previous Searches</H2>
 {% if target_list %}
     <ul>
     {% for target in target_list %}
@@ -10,3 +25,8 @@
     <p>No targets are listed.</p>
 {% endif %}
 <br>
+<HR>
+Sofia Besenski 2020 github@sofiabesenski4
+</BODY>
+
+</HTML>

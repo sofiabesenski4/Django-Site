@@ -70,7 +70,7 @@ def search(request):
         return render(request, 'word_count/search.html', context)
 
 
-
+#NOTE: Normally this code should be kept in a location that ISNT the public django server, for security/exploit reasons
 import urllib.request
 import re
 from bs4 import BeautifulSoup
