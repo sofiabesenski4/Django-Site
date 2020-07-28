@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<HEAD>
+<TITLE>Word_Count: {% block title %}Home{%  endblock %} {{ target_text }}</TITLE>
+</HEAD>
+
+<h1>Word_Count:{% block header %}Index{%  endblock %}</h1>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'word_count/style.css' %}">
+
+<div id="content-div">
+   <hr>
+    {% block content %}
+    {% endblock %}
+    <a href="{% url 'word_count:index'%}">back</a>
+</div>
+<br>
+<HR>
+Sofia Besenski 2020 github@sofiabesenski4
+</BODY>
+
+</HTML>

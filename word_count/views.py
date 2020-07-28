@@ -20,16 +20,19 @@ def index(request):
     context = {
         'target_list': target_list,
     }
-    return render(request, 'word_count/index.html', context)
+    return render(request, "word_count/index.html", context)
 
 def details(request, target_id):
     target = get_object_or_404(Target, pk=target_id)
     context = {"target_id" : target_id,
-               "body_text": target.body_set.all()[0],
+               "body_text": target.body_text,
                "target_text": target.target_text
 
                }
     return render(request, 'word_count/details.html', context)
+def analyze(request, target_id):
+    context= {}
+    return render(request, reverse('word_count:analyze').strip('/')+ ".html", context)
 
 def search(request):
     if request.method== "POST":
@@ -41,20 +44,16 @@ def search(request):
 
                 scraped_data = web_scrape(form.cleaned_data["search_url"])
                 if scraped_data:
-
-                    target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"])
-                    scraped_body = target.body_set.create(body_text=scraped_data)
-                    target.save()
-
+                    this_target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"], body_text =scraped_data[:20000] )
+                    this_target.wordList_set.create({"a":1})
                     return HttpResponseRedirect(reverse("word_count:index"))
                 else:
                     raise Exception
             except:
-                context["error_message"]= "URL Lookup did not work"
+                context["error_message"]= "exception after form was validated"
                 context["form"]= form
 
                 return render(request, reverse('word_count:search').strip('/')+".html", context)
-
         else:
             context["error_message"] = "URL or Web Error"
             context["form"] = form
@@ -67,7 +66,7 @@ def search(request):
         context = {
             'form' : WebScrapeForm()}
 
-        return render(request, 'word_count/search.html', context)
+        return render(request, reverse('word_count:search').strip('/')+".html", context)
 
 
 #NOTE: Normally this code should be kept in a location that ISNT the public django server, for security/exploit reasons
@@ -77,17 +76,14 @@ from bs4 import BeautifulSoup
 from urllib.error import HTTPError
 
 def web_scrape(url):
-
     try:
         response = urllib.request.urlopen(url)
-
     except HTTPError as e:
         print(e)
         raise Exception("HTTPError")
-
-
     soup = BeautifulSoup(response, 'html.parser')
 
-    return soup.get_text()[:19999]
+    return soup.get_text()
 
-
+def find_most_common_words(text):
+    return {"f":0}

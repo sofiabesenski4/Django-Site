@@ -7,6 +7,6 @@ app_name ='word_count'
 urlpatterns = [
     path('', views.index, name='index'),
     path('<int:target_id>/details', views.details, name='details'),
-    path('search/',views.search, name='search')
-
+    path('search/',views.search, name='search'),
+    #path('<int:target_id>/details/analyze', views.analyze, name= 'analyze')
 ]

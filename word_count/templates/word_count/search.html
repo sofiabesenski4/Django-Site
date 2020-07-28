@@ -1,8 +1,9 @@
+{% extends "base.html" %}
 {% load static %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'word_count/style.css' %}">
-<h1>Word_Count:Search</h1>
-<hr>
+{% block title %}Search{% endblock %}
+{% block header %}Search{% endblock %}
+{% block content %}
 {% if error_message %}  {{ error_message  }} {% endif%}
 <form  method="post">
 {% csrf_token %}
@@ -11,10 +12,4 @@
 </form>
 
 <a href="{% url 'word_count:index'%}">back</a>
-
-<br>
-<hr>
-Sofia Besenski 2020 github@sofiabesenski4
-</BODY>
-
-</HTML>
+{% endblock %}
