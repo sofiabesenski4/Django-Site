@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Target
+from .models import Target, WordList
 # Create your views here.
 from django.http import HttpResponse
 from django.http import HttpResponse
@@ -40,25 +40,27 @@ def search(request):
         context={}
         form = WebScrapeForm(request.POST)
         if form.is_valid():
-            try:
+           # try:
 
                 scraped_data = web_scrape(form.cleaned_data["search_url"])
                 if scraped_data:
                     this_target = Target.objects.create(search_date=timezone.now(), target_text=form.cleaned_data["search_url"], body_text =scraped_data[:20000] )
-                    this_target.wordList_set.create({"a":1})
+                    WordList.objects.create(target=this_target, common_words=find_most_common_words(scraped_data))
+
                     return HttpResponseRedirect(reverse("word_count:index"))
                 else:
+
                     raise Exception
-            except:
+           # except:
                 context["error_message"]= "exception after form was validated"
                 context["form"]= form
 
                 return render(request, reverse('word_count:search').strip('/')+".html", context)
-        else:
-            context["error_message"] = "URL or Web Error"
-            context["form"] = form
+       # else:
+       ##     context["error_message"] = "URL or Web Error"
+       #     context["form"] = form
 
-            return render(request, reverse('word_count:search').strip('/')+".html", context)
+       #     return render(request, reverse('word_count:search').strip('/')+".html", context)
 
     else:
         #then this is the user's first intereaction with the form view: need to populate the form without
@@ -74,6 +76,10 @@ import urllib.request
 import re
 from bs4 import BeautifulSoup
 from urllib.error import HTTPError
+import nltk
+from nltk.corpus import stopwords
+
+import wordcloud
 
 def web_scrape(url):
     try:
@@ -86,4 +92,6 @@ def web_scrape(url):
     return soup.get_text()
 
 def find_most_common_words(text):
-    return {"f":0}
+    wordfreqs = wordcloud.WordCloud().process_text(text)
+    print (sorted(wordfreqs.items(), key=lambda kv: kv[1],reverse=True))
+    return (sorted(wordfreqs.items(), key=lambda kv: kv[1],reverse=True))
